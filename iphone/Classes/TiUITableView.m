@@ -1848,10 +1848,6 @@
 
 - (void)setSectionHeaderTopPadding_:(id)value
 {
-  if (![TiUtils isIOSVersionOrGreater:@"15.0"]) {
-    return;
-  }
-
   self.tableView.sectionHeaderTopPadding = [TiUtils floatValue:value def:UITableViewAutomaticDimension];
 }
 

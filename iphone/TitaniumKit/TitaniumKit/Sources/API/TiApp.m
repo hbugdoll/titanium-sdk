@@ -345,7 +345,7 @@ TI_INLINE void waitForMemoryPanicCleared(void); // WARNING: This must never be r
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
 
   // Get some launch options to validate before finish launching. Some of them
-  // need to be mapepd from native to JS-types to be used by the client
+  // need to be mapped from native to JS-types to be used by the client
   NSURL *urlOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
   NSString *sourceBundleId = [launchOptions objectForKey:UIApplicationLaunchOptionsSourceApplicationKey];
   NSDictionary *_remoteNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -359,7 +359,7 @@ TI_INLINE void waitForMemoryPanicCleared(void); // WARNING: This must never be r
   if (userActivity != nil && [userActivity isKindOfClass:[NSUserActivity class]]) {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:@{ @"activityType" : [userActivity activityType] }];
 
-    if ([TiUtils isIOSVersionOrGreater:@"9.0"] && [[userActivity activityType] isEqualToString:CSSearchableItemActionType]) {
+    if ([[userActivity activityType] isEqualToString:CSSearchableItemActionType]) {
       if ([userActivity userInfo] != nil) {
         [dict setObject:[[userActivity userInfo] objectForKey:CSSearchableItemActivityIdentifier] forKey:@"searchableItemActivityIdentifier"];
       }
@@ -392,12 +392,6 @@ TI_INLINE void waitForMemoryPanicCleared(void); // WARNING: This must never be r
   if (_localNotification != nil) {
     localNotification = [[[self class] dictionaryWithLocalNotification:_localNotification] retain];
     [launchOptions removeObjectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
-
-    // Queue the "localnotificationaction" event for iOS 9 and lower.
-    // For iOS 10+, the "userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler" delegate handles it
-    if ([TiUtils isIOSVersionLower:@"9.0"]) {
-      [self tryToPostNotification:localNotification withNotificationName:kTiLocalNotificationAction completionHandler:nil];
-    }
   }
 
   // Map launched URL

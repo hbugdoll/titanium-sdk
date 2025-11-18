@@ -21,9 +21,6 @@ describe.ios('Titanium.UI.iOS.StatusBar', function () {
 		should(Ti.UI.iOS.StatusBar.GRAY).be.a.Number();
 		should(Ti.UI.iOS.StatusBar.GREY).be.a.Number();
 		should(Ti.UI.iOS.StatusBar.LIGHT_CONTENT).be.a.Number();
-		const isiOS13 =  (parseInt(Ti.Platform.version.split('.')[0]) >= 13);
-		if (isiOS13) {
-			should(Ti.UI.iOS.StatusBar.DARK_CONTENT).be.a.Number();
-		}
+		should(Ti.UI.iOS.StatusBar.DARK_CONTENT).be.a.Number();
 	});
 });

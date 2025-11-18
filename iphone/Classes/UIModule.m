@@ -328,37 +328,21 @@ MAKE_SYSTEM_PROP(LIST_ACCESSORY_TYPE_DISCLOSURE, UITableViewCellAccessoryDisclos
 
 - (NSNumber *)DATE_PICKER_STYLE_AUTOMATIC
 {
-  if (![TiUtils isIOSVersionOrGreater:@"13.4"]) {
-    return @(-1);
-  }
-
   return @(UIDatePickerStyleAutomatic);
 }
 
 - (NSNumber *)DATE_PICKER_STYLE_WHEELS
 {
-  if (![TiUtils isIOSVersionOrGreater:@"13.4"]) {
-    return @(-1);
-  }
-
   return @(UIDatePickerStyleWheels);
 }
 
 - (NSNumber *)DATE_PICKER_STYLE_COMPACT
 {
-  if (![TiUtils isIOSVersionOrGreater:@"13.4"]) {
-    return @(-1);
-  }
-
   return @(UIDatePickerStyleCompact);
 }
 
 - (NSNumber *)DATE_PICKER_STYLE_INLINE
 {
-  if (![TiUtils isIOSVersionOrGreater:@"14.0"]) {
-    return @(-1);
-  }
-
   return @(UIDatePickerStyleInline);
 }
 

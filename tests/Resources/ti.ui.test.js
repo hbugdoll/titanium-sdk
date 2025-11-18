@@ -254,8 +254,6 @@ describe('Titanium.UI', function () {
 	});
 
 	describe('Semantic Colors', () => {
-		const isIOS13Plus = OS_IOS && (OS_VERSION_MAJOR >= 13);
-
 		it('#fetchSemanticColor() with user colors', () => {
 			const semanticColors = require('./semantic.colors.json');
 
@@ -313,10 +311,6 @@ describe('Titanium.UI', function () {
 		});
 
 		it.ios('#fetchSemanticColor() with system colors', function () {
-			if (!isIOS13Plus) {
-				this.skip();
-				return;
-			}
 			const colors = new Map([
 				[ 'darkTextColor', { light: '#000000', dark: '#000000' } ],
 				[ 'labelColor', { light: '#000000', dark: '#ffffff' } ],

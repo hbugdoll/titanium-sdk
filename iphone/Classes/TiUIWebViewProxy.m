@@ -315,17 +315,7 @@ static NSArray *webViewKeySequence;
 
 - (NSNumber *)zoomLevel
 {
-  if ([TiUtils isIOSVersionOrGreater:@"14.0"]) {
-    return @([self wkWebView].pageZoom);
-  }
-
-  NSString *zoomLevel = [self evalJS:@[ @"document.body.style.zoom" ]];
-
-  if (zoomLevel == nil || zoomLevel.length == 0) {
-    return @(1.0);
-  }
-
-  return @([zoomLevel doubleValue]);
+  return @([self wkWebView].pageZoom);
 }
 
 #pragma mark Setter
@@ -495,11 +485,6 @@ static NSArray *webViewKeySequence;
 {
   KrollCallback *callback = (KrollCallback *)[args objectAtIndex:0];
   ENSURE_TYPE(callback, KrollCallback);
-
-  if (![TiUtils isIOSVersionOrGreater:@"14.0"]) {
-    [callback call:@[ @{ @"success" : NUMBOOL(NO), @"error" : @"Supported on iOS 14+" } ] thisObject:self];
-    return;
-  }
 
   [[self wkWebView] createWebArchiveDataWithCompletionHandler:^(NSData *_Nonnull archiveData, NSError *_Nonnull error) {
     if (error != nil) {
