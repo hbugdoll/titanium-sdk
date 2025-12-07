@@ -212,7 +212,7 @@
   }
 }
 
-#pragma mark iOS 8 UserActivity Methods
+#pragma mark UserActivity Methods
 
 - (NSString *)activityType
 {
@@ -309,7 +309,7 @@
 #endif
 }
 
-#pragma mark iOS 9 UserActivity Methods
+#pragma mark UserActivity Methods
 
 - (NSNumber *)eligibleForPublicIndexing
 {

@@ -607,7 +607,7 @@ TI_INLINE void waitForMemoryPanicCleared(void); // WARNING: This must never be r
   [self tryToPostNotification:localNotification withNotificationName:kTiLocalNotificationAction completionHandler:completionHandler];
 }
 
-// iOS 9+
+// iOS 9+ (first deprecated in iOS 10)
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void (^)())completionHandler
 {
   [self tryToInvokeSelector:@selector(application:handleActionWithIdentifier:forRemoteNotification:withResponseInfo:completionHandler:)
@@ -619,7 +619,7 @@ TI_INLINE void waitForMemoryPanicCleared(void); // WARNING: This must never be r
                              completionHandler:completionHandler];
 }
 
-// iOS < 9
+// iOS 8 (first deprecated in iOS 10)
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler
 {
   [self tryToInvokeSelector:@selector(application:handleActionWithIdentifier:forRemoteNotification:completionHandler:)

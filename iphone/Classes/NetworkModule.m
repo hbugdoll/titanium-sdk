@@ -243,12 +243,11 @@ MAKE_SYSTEM_NUMBER(PROGRESS_UNKNOWN, NUMINT(-1));
 
   UIApplication *app = [UIApplication sharedApplication];
 
-  // for iOS 8 or greater only
   // Note advised to register user notification settings in Ti.App.iOS first before register for remote notifications
   [app registerForRemoteNotifications];
 
   if ([args objectForKey:@"types"] != nil) {
-    NSLog(@"[WARN] Passing `types` to registerForPushNotifications is not supported on iOS 8 and greater. Use registerUserNotificationSettings to register notification types.");
+    NSLog(@"[WARN] Passing `types` to registerForPushNotifications is not supported. Use registerUserNotificationSettings to register notification types.");
   }
   // check to see upon registration if we were started with a push
   // notification and if so, go ahead and trigger our callback

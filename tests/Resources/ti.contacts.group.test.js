@@ -72,6 +72,6 @@ describe.allBroken('Titanium.Contacts.Group', function () {
 		should(group.sortedMembers).be.a.Function();
 		should(group.sortedMembers(Ti.Contacts.CONTACTS_SORT_LAST_NAME)).be.an.Array();
 		// TODO Test the method
-		// Test non Ti.Contants.CONTACTS_SORT values as arg
+		// Test non Ti.Contacts.CONTACTS_SORT values as arg
 	});
 });

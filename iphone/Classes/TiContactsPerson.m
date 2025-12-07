@@ -14,8 +14,8 @@
 static NSDictionary *contactProperties;
 static NSDictionary *multiValueProperties;
 static NSDictionary *multiValueTypes;
-static NSDictionary *iOS9multiValueLabels;
-static NSDictionary *iOS9propertyKeys;
+static NSDictionary *multiValueLabels;
+static NSDictionary *propertyKeys;
 
 @implementation TiContactsPerson
 
@@ -42,7 +42,7 @@ static NSDictionary *iOS9propertyKeys;
     }
     module = module_;
     [self setObserver:observer_];
-    iOS9contactProperties = [[self getiOS9ContactProperties:person_] retain];
+    contactProperties = [[self getContactProperties:person_] retain];
   }
   return self;
 }
@@ -50,7 +50,7 @@ static NSDictionary *iOS9propertyKeys;
 - (void)dealloc
 {
   [self setObserver:nil];
-  RELEASE_TO_NIL(iOS9contactProperties)
+  RELEASE_TO_NIL(contactProperties)
   [super dealloc];
 }
 
@@ -64,17 +64,17 @@ static NSDictionary *iOS9propertyKeys;
   return person;
 }
 
-- (NSDictionary *)getiOS9ContactProperties:(CNMutableContact *)contact
+- (NSDictionary *)getContactProperties:(CNMutableContact *)contact
 {
   if (contact == nil) {
     return nil;
   }
 
-  // iOS 9 contacts framework by default returns partial contact.
+  // Contacts framework by default returns partial contact.
   // For ex: Email is returned nil when phone is selected and vice-versa.
   // So check and add.
   NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-  NSDictionary *supportedProperties = [TiContactsPerson iOS9propertyKeys];
+  NSDictionary *supportedProperties = [TiContactsPerson propertyKeys];
   for (NSString *property in supportedProperties) {
     if ([contact isKeyAvailable:property]) {
       id value = [contact valueForKey:property];
@@ -92,101 +92,112 @@ static NSDictionary *iOS9propertyKeys;
 
 + (NSDictionary *)iOS9propertyKeys
 {
-  if (iOS9propertyKeys == nil) {
-    iOS9propertyKeys = [[NSDictionary alloc] initWithObjectsAndKeys:@"firstName", CNContactGivenNameKey,
-                                             @"lastName", CNContactFamilyNameKey,
-                                             @"middleName", CNContactMiddleNameKey,
-                                             @"prefix", CNContactNamePrefixKey,
-                                             @"suffix", CNContactNameSuffixKey,
-                                             @"nickname", CNContactNicknameKey,
-                                             @"firstPhonetic", CNContactPhoneticGivenNameKey,
-                                             @"lastPhonetic", CNContactPhoneticFamilyNameKey,
-                                             @"middlePhonetic", CNContactPhoneticMiddleNameKey,
-                                             @"organization", CNContactOrganizationNameKey,
-                                             @"jobTitle", CNContactJobTitleKey,
-                                             @"department", CNContactDepartmentNameKey,
-                                             @"email", CNContactEmailAddressesKey,
-                                             @"note", CNContactNoteKey,
-                                             @"birthday", CNContactBirthdayKey,
-                                             @"kind", CNContactTypeKey,
-                                             @"address", CNContactPostalAddressesKey,
-                                             @"phone", CNContactPhoneNumbersKey,
-                                             @"socialProfile", CNContactSocialProfilesKey,
-                                             @"instantMessage", CNContactInstantMessageAddressesKey,
-                                             @"date", CNContactDatesKey,
-                                             @"url", CNContactUrlAddressesKey,
-                                             @"relatedNames", CNContactRelationsKey,
-                                             @"alternateBirthday", CNContactNonGregorianBirthdayKey,
-                                             // Image keys?
-                                             nil];
+  return [self propertyKeys];
+}
++ (NSDictionary *)propertyKeys
+{
+  if (propertyKeys == nil) {
+    propertyKeys = [[NSDictionary alloc] initWithObjectsAndKeys:@"firstName", CNContactGivenNameKey,
+                                         @"lastName", CNContactFamilyNameKey,
+                                         @"middleName", CNContactMiddleNameKey,
+                                         @"prefix", CNContactNamePrefixKey,
+                                         @"suffix", CNContactNameSuffixKey,
+                                         @"nickname", CNContactNicknameKey,
+                                         @"firstPhonetic", CNContactPhoneticGivenNameKey,
+                                         @"lastPhonetic", CNContactPhoneticFamilyNameKey,
+                                         @"middlePhonetic", CNContactPhoneticMiddleNameKey,
+                                         @"organization", CNContactOrganizationNameKey,
+                                         @"jobTitle", CNContactJobTitleKey,
+                                         @"department", CNContactDepartmentNameKey,
+                                         @"email", CNContactEmailAddressesKey,
+                                         @"note", CNContactNoteKey,
+                                         @"birthday", CNContactBirthdayKey,
+                                         @"kind", CNContactTypeKey,
+                                         @"address", CNContactPostalAddressesKey,
+                                         @"phone", CNContactPhoneNumbersKey,
+                                         @"socialProfile", CNContactSocialProfilesKey,
+                                         @"instantMessage", CNContactInstantMessageAddressesKey,
+                                         @"date", CNContactDatesKey,
+                                         @"url", CNContactUrlAddressesKey,
+                                         @"relatedNames", CNContactRelationsKey,
+                                         @"alternateBirthday", CNContactNonGregorianBirthdayKey,
+                                         // Image keys?
+                                         nil];
   }
-  return iOS9propertyKeys;
+  return propertyKeys;
 }
 
 + (NSDictionary *)iOS9multiValueLabels
 {
-  if (iOS9multiValueLabels == nil) {
-    iOS9multiValueLabels =
-        [[NSDictionary alloc] initWithObjectsAndKeys:@"home", CNLabelHome, // Generic labels
-                              @"work", CNLabelWork,
-                              @"other", CNLabelOther,
-                              @"mobile", CNLabelPhoneNumberMobile, // Phone labels
-                              @"pager", CNLabelPhoneNumberPager,
-                              @"workFax", CNLabelPhoneNumberWorkFax,
-                              @"main", CNLabelPhoneNumberMain,
-                              @"iPhone", CNLabelPhoneNumberiPhone,
-                              @"homeFax", CNLabelPhoneNumberHomeFax,
-                              @"facebookProfile", [CNSocialProfileServiceFacebook lowercaseString], // Social Profile Labels, curiously the string constants in the system is in lower case, so small hack here until iOS 9 Beta makes changes here.
-                              @"flickrProfile", [CNSocialProfileServiceFlickr lowercaseString],
-                              @"gameCenterProfile", [CNSocialProfileServiceGameCenter lowercaseString],
-                              @"linkedInProfile", [CNSocialProfileServiceLinkedIn lowercaseString],
-                              @"myspaceProfile", [CNSocialProfileServiceMySpace lowercaseString],
-                              @"sinaWeiboProfile", [CNSocialProfileServiceSinaWeibo lowercaseString],
-                              @"twitterProfile", [CNSocialProfileServiceTwitter lowercaseString],
-                              @"yelpProfile", [CNSocialProfileServiceYelp lowercaseString],
-                              @"tencentWeiboProfile", [CNSocialProfileServiceTencentWeibo lowercaseString],
-                              @"aim", CNInstantMessageServiceAIM, // IM labels
-                              @"icq", CNInstantMessageServiceICQ,
-                              @"jabber", CNInstantMessageServiceJabber,
-                              @"msn", CNInstantMessageServiceMSN,
-                              @"yahoo", CNInstantMessageServiceYahoo,
-                              @"qq", CNInstantMessageServiceQQ,
-                              @"skype", CNInstantMessageServiceSkype,
-                              @"googletalk", CNInstantMessageServiceGoogleTalk,
-                              @"gadugadu", CNInstantMessageServiceGaduGadu,
-                              @"facebook", CNInstantMessageServiceFacebook,
-                              @"mother", CNLabelContactRelationMother, // Relation labels
-                              @"father", CNLabelContactRelationFather,
-                              @"parent", CNLabelContactRelationParent,
-                              @"sister", CNLabelContactRelationSister,
-                              @"brother", CNLabelContactRelationBrother,
-                              @"child", CNLabelContactRelationChild,
-                              @"friend", CNLabelContactRelationFriend,
-                              @"spouse", CNLabelContactRelationSpouse,
-                              @"partner", CNLabelContactRelationPartner,
-                              @"manager", CNLabelContactRelationManager,
-                              @"assistant", CNLabelContactRelationAssistant,
-                              @"anniversary", CNLabelDateAnniversary, // Date label
-                              @"homepage", CNLabelURLAddressHomePage, // URL label
-                              nil];
+  return [self multiValueLabels];
+}
++ (NSDictionary *)multiValueLabels
+{
+  if (multiValueLabels == nil) {
+    multiValueLabels = [[NSDictionary alloc] initWithObjectsAndKeys:@"home", CNLabelHome, // Generic labels
+                                             @"work", CNLabelWork,
+                                             @"other", CNLabelOther,
+                                             @"mobile", CNLabelPhoneNumberMobile, // Phone labels
+                                             @"pager", CNLabelPhoneNumberPager,
+                                             @"workFax", CNLabelPhoneNumberWorkFax,
+                                             @"main", CNLabelPhoneNumberMain,
+                                             @"iPhone", CNLabelPhoneNumberiPhone,
+                                             @"homeFax", CNLabelPhoneNumberHomeFax,
+                                             @"facebookProfile", [CNSocialProfileServiceFacebook lowercaseString], // Social Profile Labels, curiously the string constants in the system is in lower case, so small hack here until iOS 9 Beta makes changes here.
+                                             @"flickrProfile", [CNSocialProfileServiceFlickr lowercaseString],
+                                             @"gameCenterProfile", [CNSocialProfileServiceGameCenter lowercaseString],
+                                             @"linkedInProfile", [CNSocialProfileServiceLinkedIn lowercaseString],
+                                             @"myspaceProfile", [CNSocialProfileServiceMySpace lowercaseString],
+                                             @"sinaWeiboProfile", [CNSocialProfileServiceSinaWeibo lowercaseString],
+                                             @"twitterProfile", [CNSocialProfileServiceTwitter lowercaseString],
+                                             @"yelpProfile", [CNSocialProfileServiceYelp lowercaseString],
+                                             @"tencentWeiboProfile", [CNSocialProfileServiceTencentWeibo lowercaseString],
+                                             @"aim", CNInstantMessageServiceAIM, // IM labels
+                                             @"icq", CNInstantMessageServiceICQ,
+                                             @"jabber", CNInstantMessageServiceJabber,
+                                             @"msn", CNInstantMessageServiceMSN,
+                                             @"yahoo", CNInstantMessageServiceYahoo,
+                                             @"qq", CNInstantMessageServiceQQ,
+                                             @"skype", CNInstantMessageServiceSkype,
+                                             @"googletalk", CNInstantMessageServiceGoogleTalk,
+                                             @"gadugadu", CNInstantMessageServiceGaduGadu,
+                                             @"facebook", CNInstantMessageServiceFacebook,
+                                             @"mother", CNLabelContactRelationMother, // Relation labels
+                                             @"father", CNLabelContactRelationFather,
+                                             @"parent", CNLabelContactRelationParent,
+                                             @"sister", CNLabelContactRelationSister,
+                                             @"brother", CNLabelContactRelationBrother,
+                                             @"child", CNLabelContactRelationChild,
+                                             @"friend", CNLabelContactRelationFriend,
+                                             @"spouse", CNLabelContactRelationSpouse,
+                                             @"partner", CNLabelContactRelationPartner,
+                                             @"manager", CNLabelContactRelationManager,
+                                             @"assistant", CNLabelContactRelationAssistant,
+                                             @"anniversary", CNLabelDateAnniversary, // Date label
+                                             @"homepage", CNLabelURLAddressHomePage, // URL label
+                                             nil];
   }
-  return iOS9multiValueLabels;
+  return multiValueLabels;
 }
 
 - (void)updateiOS9ContactProperties
 {
-  RELEASE_TO_NIL(iOS9contactProperties)
-  iOS9contactProperties = nil;
-  [self getiOS9ContactProperties:person];
+  [self updateContactProperties];
+}
+- (void)updateContactProperties
+{
+  RELEASE_TO_NIL(contactProperties)
+  contactProperties = nil;
+  [self getContactProperties:person];
 }
 
 #pragma mark Multi-value property management
 
-- (NSDictionary *)dictionaryFromiOS9MultiValueArray:(NSArray *)property
+- (NSDictionary *)dictionaryFromMultiValueArray:(NSArray *)property
 {
   NSMutableDictionary *multiValueDict = [NSMutableDictionary dictionaryWithCapacity:[property count]];
   for (CNLabeledValue *genericProperty in property) {
-    NSString *key = [[TiContactsPerson iOS9multiValueLabels] valueForKey:genericProperty.label];
+    NSString *key = [[TiContactsPerson multiValueLabels] valueForKey:genericProperty.label];
     if (key == nil) {
       if (genericProperty.label == nil && [genericProperty.value isKindOfClass:[CNPhoneNumber class]]) {
         // For case where phone number is added via phone dialog. This should be nonnull as according to apple docs but quick fix for now til apple fixes it.
@@ -256,6 +267,7 @@ static NSDictionary *iOS9propertyKeys;
 
 #pragma mark Property management
 
+// TODO: Remove in a future major release
 - (NSNumber *)recordId
 {
   DebugLog(@"[WARN] This \"recordId\" property has been removed for iOS 9 and greater.");
@@ -314,6 +326,7 @@ static NSDictionary *iOS9propertyKeys;
   return @"No name";
 }
 
+// TODO: Remove in a future major release
 - (void)setImage:(id)value
 {
   DebugLog(@"[WARN] This \"image\" property has been removed for iOS 9 and greater.");
@@ -369,7 +382,7 @@ static NSDictionary *iOS9propertyKeys;
     NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:person.birthday];
     return [TiUtils UTCDateForDate:date];
   }
-  if (property = [iOS9contactProperties valueForKey:key]) {
+  if (property = [contactProperties valueForKey:key]) {
     id result = [NSNull null];
     if ([property isKindOfClass:[NSString class]]) {
       result = property;
@@ -393,7 +406,7 @@ static NSDictionary *iOS9propertyKeys;
     }
     // Multi-value properties
     if ([property isKindOfClass:[NSArray class]]) {
-      result = [self dictionaryFromiOS9MultiValueArray:property];
+      result = [self dictionaryFromMultiValueArray:property];
     }
     return result;
   } else {
@@ -414,7 +427,7 @@ static NSDictionary *iOS9propertyKeys;
   }
 
   id property = nil;
-  NSArray *allKeys = [[TiContactsPerson iOS9propertyKeys] allKeysForObject:key];
+  NSArray *allKeys = [[TiContactsPerson propertyKeys] allKeysForObject:key];
   // Key is undefined
   if ([allKeys count] != 1) {
     [super setValue:value forUndefinedKey:key];
@@ -455,7 +468,7 @@ static NSDictionary *iOS9propertyKeys;
       NSArray *objects = [value objectForKey:key];
       for (NSString *object in objects) {
         CNPhoneNumber *phoneNumber = [CNPhoneNumber phoneNumberWithStringValue:object];
-        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:phoneNumber];
+        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:phoneNumber];
         [newObjects addObject:labeledValue];
       }
     }
@@ -470,7 +483,7 @@ static NSDictionary *iOS9propertyKeys;
     for (NSString *key in keys) {
       NSArray *objects = [value objectForKey:key];
       for (NSString *object in objects) {
-        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:object];
+        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:object];
         [newObjects addObject:labeledValue];
       }
     }
@@ -485,7 +498,7 @@ static NSDictionary *iOS9propertyKeys;
     for (NSString *key in keys) {
       NSArray *objects = [value objectForKey:key];
       for (NSString *object in objects) {
-        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:object];
+        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:object];
         [newObjects addObject:labeledValue];
       }
     }
@@ -504,7 +517,7 @@ static NSDictionary *iOS9propertyKeys;
         unsigned unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay;
         NSCalendar *cal = [NSCalendar currentCalendar];
         NSDateComponents *dateComps = [cal components:unitFlags fromDate:saveDate];
-        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:dateComps];
+        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:dateComps];
         [newObjects addObject:labeledValue];
       }
     }
@@ -520,7 +533,7 @@ static NSDictionary *iOS9propertyKeys;
       NSArray *objects = [value objectForKey:key];
       for (NSString *object in objects) {
         CNContactRelation *relation = [CNContactRelation contactRelationWithName:object];
-        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:relation];
+        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:relation];
         [newObjects addObject:labeledValue];
       }
     }
@@ -542,7 +555,7 @@ static NSDictionary *iOS9propertyKeys;
         address.street = [dict objectForKey:@"Street"];
         address.postalCode = [dict objectForKey:@"PostalCode"];
         address.ISOCountryCode = [dict objectForKey:@"CountryCode"];
-        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:address];
+        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:address];
         [newObjects addObject:labeledValue];
       }
     }
@@ -558,7 +571,7 @@ static NSDictionary *iOS9propertyKeys;
       NSArray *objects = [value objectForKey:key];
       for (NSDictionary *dict in objects) {
         CNInstantMessageAddress *im = [[[CNInstantMessageAddress alloc] initWithUsername:[dict objectForKey:@"username"] service:[dict objectForKey:@"service"]] autorelease];
-        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:im];
+        CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:[[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0] value:im];
         [newObjects addObject:labeledValue];
       }
     }
@@ -575,7 +588,7 @@ static NSDictionary *iOS9propertyKeys;
       for (NSDictionary *dict in objects) {
         // URL automatically set
         CNSocialProfile *sp = [[[CNSocialProfile alloc] initWithUrlString:nil username:[dict objectForKey:@"username"] userIdentifier:nil service:[dict objectForKey:@"service"]] autorelease];
-        NSString *label = [[[TiContactsPerson iOS9multiValueLabels] allKeysForObject:key] objectAtIndex:0];
+        NSString *label = [[[TiContactsPerson multiValueLabels] allKeysForObject:key] objectAtIndex:0];
         NSString *firstChar = [label substringToIndex:1]; // Small hack here to capitalize first letter for socialProfile
         NSString *newLabel = [[firstChar uppercaseString] stringByAppendingString:[label substringFromIndex:1]];
         CNLabeledValue *labeledValue = [CNLabeledValue labeledValueWithLabel:newLabel value:sp];
@@ -586,12 +599,12 @@ static NSDictionary *iOS9propertyKeys;
     RELEASE_TO_NIL(newObjects)
   }
   // Why we do this ?
-  // In >= iOS 9 contacts are immutable as well. So when a change happens we should create an associated CNSaveRequest.
+  // Contacts are immutable as well. So when a change happens we should create an associated CNSaveRequest.
   // By observing on this object the observer can update its CNSaveRequest accordingly.
   [self checkAndNotifyObserver];
 }
 
-// For iOS 9 deleting contact
+// For deleting contact
 #ifndef __clang_analyzer__
 - (CNSaveRequest *)getSaveRequestForDeletion
 {

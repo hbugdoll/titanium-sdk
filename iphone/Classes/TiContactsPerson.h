@@ -22,16 +22,27 @@
   @private
   CNMutableContact *person;
   ContactsModule *module;
-  NSDictionary *iOS9contactProperties;
+  NSDictionary *contactProperties;
 }
 
-@property (readonly, nonatomic) NSNumber *recordId;
+/**
+ @deprecated Use `identifier` instead.
+ */
+@property (readonly, nonatomic) NSNumber *recordId __attribute__((deprecated));
 
 @property (readonly, nonatomic) NSString *identifier;
 @property (assign, nonatomic) id<TiContactsPersonUpdateObserver> observer;
 
-+ (NSDictionary *)iOS9multiValueLabels;
-+ (NSDictionary *)iOS9propertyKeys;
+/**
+ @deprecated Use `multiValueLabels` instead.
+ */
++ (NSDictionary *)iOS9multiValueLabels __attribute__((deprecated));
++ (NSDictionary *)multiValueLabels;
+/**
+ @deprecated Use `propertyKeys` instead.
+ */
++ (NSDictionary *)iOS9propertyKeys __attribute__((deprecated));
++ (NSDictionary *)propertyKeys;
 - (id)_initWithPageContext:(id<TiEvaluator>)context
                  contactId:(CNMutableContact *)person_
                     module:(ContactsModule *)module_;
@@ -43,7 +54,11 @@
 - (CNSaveRequest *)getSaveRequestForAddition:(NSString *)containerIdentifier;
 - (CNSaveRequest *)getSaveRequestForAddToGroup:(CNMutableGroup *)group;
 - (CNSaveRequest *)getSaveRequestForRemoveFromGroup:(CNMutableGroup *)group;
-- (void)updateiOS9ContactProperties;
+/**
+ @deprecated Use `updateContactProperties` instead.
+ */
+- (void)updateiOS9ContactProperties __attribute__((deprecated));
+- (void)updateContactProperties;
 - (CNMutableContact *)nativePerson;
 - (id)valueForUndefinedKey:(NSString *)key;
 - (NSString *)fullName;

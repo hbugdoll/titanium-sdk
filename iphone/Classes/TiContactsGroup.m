@@ -222,7 +222,7 @@
 #endif
 }
 
-// For iOS 9 deleting contact
+// For deleting contact
 #ifndef __clang_analyzer__
 - (CNSaveRequest *)getSaveRequestForDeletion
 {

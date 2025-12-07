@@ -258,9 +258,7 @@ DEFINE_EXCEPTIONS
     [self updateMoreBar:navigationController];
     if (allowConfiguration) {
       [self setEditButton:navigationController];
-    }
-    // However, under iOS 4, we have to manage the appearance/disappearance of the edit button ourselves.
-    else {
+    } else {
       [self removeEditButton:navigationController];
     }
   }

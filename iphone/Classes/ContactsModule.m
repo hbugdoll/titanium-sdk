@@ -232,7 +232,7 @@ static NSArray *contactKeysWithoutImage;
     NSMutableArray *pickerFields = [NSMutableArray arrayWithCapacity:[fields count]];
     for (id field in fields) {
       id property = nil;
-      if (property = [[[TiContactsPerson iOS9propertyKeys] allKeysForObject:field] objectAtIndex:0]) {
+      if (property = [[[TiContactsPerson propertyKeys] allKeysForObject:field] objectAtIndex:0]) {
         [pickerFields addObject:property];
       }
     }
@@ -454,7 +454,7 @@ static NSArray *contactKeysWithoutImage;
                                                                          module:self] autorelease];
   RELEASE_TO_NIL(newContact);
   [newPerson setValuesForKeysWithDictionary:arg];
-  [newPerson updateiOS9ContactProperties];
+  [newPerson updateContactProperties];
   saveRequest = [newPerson getSaveRequestForAddition:[ourContactStore defaultContainerIdentifier]];
   [self save:nil];
   newPerson.observer = self;
@@ -555,24 +555,15 @@ MAKE_SYSTEM_PROP(AUTHORIZATION_AUTHORIZED, CNAuthorizationStatusAuthorized);
 
     id value = contactProperty.value;
     id result = [NSNull null];
-    NSString *property = [[TiContactsPerson iOS9propertyKeys] objectForKey:contactProperty.key];
-    NSString *label = [[TiContactsPerson iOS9multiValueLabels] valueForKey:contactProperty.label];
+    NSString *property = [[TiContactsPerson propertyKeys] objectForKey:contactProperty.key];
+    NSString *label = [[TiContactsPerson multiValueLabels] valueForKey:contactProperty.label];
 
     if ([value isKindOfClass:[NSString class]]) {
       result = value;
     }
     if ([value isKindOfClass:[NSDateComponents class]]) {
-      // this part of the code is supposed to work for birthday and alternateBirthday
-      // but iOS 9 Beta is giving a null value for these properties in `value`, so only
-      // processing `anniversary` and `other` here.
-      //			if ([contactProperty.key isEqualToString:CNContactNonGregorianBirthdayKey]) {
-      //				NSDateComponents *dateComps = (NSDateComponents*)value;
-      //				result = [NSDictionary dictionaryWithObjectsAndKeys: dateComps.calendar.calendarIdentifier,@"calendarIdentifier",NUMLONG(dateComps.era),@"era",NUMLONG(dateComps.year),@"year",NUMLONG(dateComps.month),@"month",NUMLONG(dateComps.day),@"day",NUMBOOL(dateComps.isLeapMonth),@"isLeapMonth", nil];
-      //			}
-      //			else {
       NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:value];
       result = [TiUtils UTCDateForDate:date];
-      //			}
     }
     if ([value isKindOfClass:[CNPostalAddress class]]) {
       CNPostalAddress *address = value;
@@ -607,7 +598,7 @@ MAKE_SYSTEM_PROP(AUTHORIZATION_AUTHORIZED, CNAuthorizationStatusAuthorized);
       result = phoneNumber.stringValue;
     }
 
-    // iOS 9+ doesn't valuate birthdays. Watch this in case of changes.
+    // iOS doesn't valuate birthdays. Watch this in case of changes.
     // Also contactProperty.identifier has an undocumented string "_systemCalendar" for gregorian calender.
     if ([contactProperty.key isEqualToString:@"birthdays"]) {
       if ([contactProperty.identifier isEqualToString:@"gregorian"] ||
@@ -638,7 +629,7 @@ MAKE_SYSTEM_PROP(AUTHORIZATION_AUTHORIZED, CNAuthorizationStatusAuthorized);
 
 - (void)contactViewController:(nonnull CNContactViewController *)viewController didCompleteWithContact:(nullable CNContact *)contact
 {
-  // Unused for nwo
+  // Unused for now
 }
 
 #pragma mark - Ti.Contacts.PersonUpdateObserver
