@@ -309,7 +309,7 @@
 #endif
 }
 
-#pragma mark UserActivity Methods
+#pragma mark UserActivity Methods cont.
 
 - (NSNumber *)eligibleForPublicIndexing
 {
